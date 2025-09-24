@@ -22,6 +22,12 @@
       "publisher": "Microsoft",
       "name": "Base Application",
       "version": "24.0.0.0"
+    },
+    {
+      "id": "d800ce89-1c82-4fa1-bae7-7e19e2828851",
+      "publisher": "Systema Solutions",
+      "name": "Systema BIR Package - W1",
+      "version": "25.0.0.7"
     }
   ],
   "screenshots": [],

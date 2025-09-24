@@ -6,14 +6,16 @@
             "request": "launch",
             "name": "Microsoft cloud sandbox",
             "environmentType": "Sandbox",
-            "environmentName": "sandbox2ph",
-            "startupObjectId": 9308,
+            //"environmentName": "sandbox2ph",
+            "environmentName": "DemoPOC",
+            "startupObjectId": 50000,
             "startupObjectType": "Page",
             "breakOnError": true,
             "launchBrowser": true,
             "enableLongRunningSqlStatements": true,
             "enableSqlInformationDebugger": true,
-            "tenant": "e3c22a6f-24b9-4e95-ac17-1a3c5eb4c294",
+            //"tenant": "e3c22a6f-24b9-4e95-ac17-1a3c5eb4c294",
+            "tenant": "62712483-3495-4630-ab7f-5be33fa0c664",
             //"schemaUpdateMode": "ForceSync"
         }
     ]

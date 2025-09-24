@@ -40,6 +40,7 @@ table 50000 "Customer and Invoice Staging"
                 end;
             end;
         }
+
         field(35; "Item No."; Text[50])
         {
             trigger OnValidate()
@@ -168,6 +169,79 @@ table 50000 "Customer and Invoice Staging"
         {
             DataClassification = ToBeClassified;
         }
+        //>>PTC001
+        field(230; "PNR No."; code[30])
+        {
+            DataClassification = ToBeClassified;
+
+        }
+        field(231; "Booking Ref. No"; code[20])
+        {
+            DataClassification = ToBeClassified;
+
+        }
+        field(232; "Passenger Name"; text[100])
+        {
+            DataClassification = ToBeClassified;
+
+        }
+
+        field(233; "WHT Bus. Posting Group"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+
+        }
+        field(234; "WHT Product Posting Group"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+
+        }
+        field(250; "Client Type Code(Dimension)"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(251; "Cost Category (Dimension)"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(252; "Cost Center (Dimension)"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(253; "Office Location (Dimension)"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(254; "Principal (Dimension)"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(255; "Product Type (Dimension)"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(256; "Profit Center (Dimension)"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(257; "SF Code (Dimension)"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(258; "Test Code (Dimension)"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+        }
+
+        field(259; "Transact Type (Dimension)"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(260; "Vessel (Dimension)"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+        }
+        //<<PTC001
     }
 
     keys
@@ -196,7 +270,7 @@ table 50000 "Customer and Invoice Staging"
         "Date Imported" := CURRENTDATETIME;
 
         if Rec."Base Unit of Measure" = '' then
-            Rec.Validate("Base Unit of Measure", 'OZ');
+            Rec.Validate("Base Unit of Measure", 'PCS');//xtn
     end;
 
     local procedure GetCompanyName(ShippedFrom: Code[20]): Text[30]

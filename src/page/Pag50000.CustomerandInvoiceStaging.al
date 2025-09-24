@@ -2,7 +2,7 @@ page 50000 "Customer and Invoice Staging"
 {
     PageType = List;
     SourceTable = "Customer and Invoice Staging";
-    Caption = 'Customer and Invoice Staging New';
+    Caption = 'Sales Invoice Staging';
     UsageCategory = Lists;
     ApplicationArea = all;
 
@@ -130,27 +130,90 @@ page 50000 "Customer and Invoice Staging"
                 {
                     ApplicationArea = all;
                 }
-                field("Date Imported"; "Date Imported")
+                //>>PTC001
+                field("PNR No."; rec."PNR No.")
                 {
                     ApplicationArea = all;
                 }
-                field("Imported By"; "Imported By")
+                field("Booking Ref. No"; rec."Booking Ref. No")
                 {
                     ApplicationArea = all;
                 }
-                field(Processed; Processed)
+                field("Passenger Name"; rec."Passenger Name")
                 {
                     ApplicationArea = all;
                 }
-                field("Date Processed"; "Date Processed")
+
+                field("WHT Bus. Posting Group"; rec."WHT Bus. Posting Group")
                 {
                     ApplicationArea = all;
                 }
-                field("Processed By"; "Processed By")
+                field("WHT Product Posting Group"; rec."WHT Product Posting Group")
                 {
                     ApplicationArea = all;
                 }
-                field("Error Message"; "Error Message")
+                field("Client Type Code(Dimension)"; rec."Client Type Code(Dimension)")
+                {
+                    ApplicationArea = all;
+                }
+                field("Cost Category (Dimension)"; rec."Cost Category (Dimension)")
+                {
+                    ApplicationArea = all;
+                }
+                field("Cost Center (Dimension)"; rec."Cost Center (Dimension)")
+                {
+                    ApplicationArea = all;
+                }
+                field("Office Location (Dimension)"; rec."Office Location (Dimension)")
+                {
+                    ApplicationArea = all;
+                }
+                field("Principal (Dimension)"; rec."Principal (Dimension)")
+                {
+                    ApplicationArea = all;
+                }
+                field("Product Type (Dimension)"; rec."Product Type (Dimension)")
+                {
+                    ApplicationArea = all;
+                }
+                field("Product Center (Dimension)"; rec."Profit Center (Dimension)")
+                {
+                    ApplicationArea = all;
+                }
+                field("SF Code (Dimension)"; rec."SF Code (Dimension)")
+                {
+                    ApplicationArea = all;
+                }
+                field("Transact Type (Dimension)"; rec."Transact Type (Dimension)")
+                {
+                    ApplicationArea = all;
+                }
+                field("Vessel (Dimension)"; rec."Vessel (Dimension)")
+                {
+                    ApplicationArea = all;
+                }
+                //<<PTC001
+                field("Date Imported"; Rec."Date Imported")
+                {
+                    ApplicationArea = all;
+                }
+                field("Imported By"; Rec."Imported By")
+                {
+                    ApplicationArea = all;
+                }
+                field(Processed; Rec.Processed)
+                {
+                    ApplicationArea = all;
+                }
+                field("Date Processed"; Rec."Date Processed")
+                {
+                    ApplicationArea = all;
+                }
+                field("Processed By"; Rec."Processed By")
+                {
+                    ApplicationArea = all;
+                }
+                field("Error Message"; Rec."Error Message")
                 {
                     ApplicationArea = all;
                     Style = Attention;
@@ -168,6 +231,7 @@ page 50000 "Customer and Invoice Staging"
             action("Import Customer and Invoice")
             {
                 ApplicationArea = all;
+                Caption = 'Import Sales Invoice';
                 Image = Import;
                 Promoted = true;
                 PromotedCategory = Process;
@@ -188,6 +252,7 @@ page 50000 "Customer and Invoice Staging"
             action("Check Customer and Invoice")
             {
                 ApplicationArea = all;
+                Caption = 'Check Staging Data';
                 Image = TestReport;
                 Promoted = true;
                 PromotedCategory = Process;
@@ -205,6 +270,7 @@ page 50000 "Customer and Invoice Staging"
             action("Create Customer and Invoice")
             {
                 ApplicationArea = all;
+                Caption = 'Create Invoice';
                 Image = MakeOrder;
                 Promoted = true;
                 PromotedCategory = Process;
@@ -215,7 +281,7 @@ page 50000 "Customer and Invoice Staging"
                     IntegrationMgmt: Codeunit "SGB Integration Management";
                 begin
                     IntegrationMgmt.SalesProcess;
-
+                    Message('Sales Invoice creation completed.');
                     CurrPage.UPDATE(FALSE);
                 end;
             }

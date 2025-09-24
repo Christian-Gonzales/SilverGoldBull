@@ -5,8 +5,7 @@ codeunit 50000 "SGB Integration Management"
     // SGB003  YD  20160115  Apply Template to new customer only
     // SGB005  YD  20160825  Add new field CustomerInvoiceStaging."Country Code"
     // SGB006  YD  20180927  Get Dwscription from staging PurchLine.Description := VendorInvoiceStaging.Description;
-
-
+    // PTC001
     trigger OnRun()
     begin
     end;
@@ -232,7 +231,7 @@ codeunit 50000 "SGB Integration Management"
                     TempSalesHeader."External Document No." := CustomerInvoiceStaging."Order Increment Id"; // TempSalesHeader."External Document No." := CustomerInvoiceStaging."External Document No."; //SSLT 09-27-21
 
                     //SGB005
-                    TempSalesHeader."Shortcut Dimension 1 Code" := CustomerInvoiceStaging."Country Code";
+                    //TempSalesHeader."Shortcut Dimension 1 Code" := CustomerInvoiceStaging."Country Code"; //PTC001
                     //SGB005
                     IF TempSalesHeader.INSERT THEN;
 
@@ -262,7 +261,7 @@ codeunit 50000 "SGB Integration Management"
                     TempSalesHeader."Currency Code" := '';
 
                 //SGB005
-                //SalesHeader.VALIDATE("Shortcut Dimension 1 Code",TempSalesHeader."Shortcut Dimension 1 Code");
+                //SalesHeader.VALIDATE("Shortcut Dimension 1 Code",TempSalesHeader."Shortcut Dimension 1 Code");//PTC001
                 //SGB005
 
                 SalesHeader.INSERT(TRUE);
@@ -272,7 +271,7 @@ codeunit 50000 "SGB Integration Management"
 
                 SalesHeader.GET(SalesHeader."Document Type"::Invoice, TempSalesHeader."No.");
                 //SalesHeader.INIT;
-                SalesHeader.VALIDATE("Shortcut Dimension 1 Code", TempSalesHeader."Shortcut Dimension 1 Code");
+                //SalesHeader.VALIDATE("Shortcut Dimension 1 Code", TempSalesHeader."Shortcut Dimension 1 Code");//PTC001
                 SalesHeader.VALIDATE("Document Date", TempSalesHeader."Posting Date");
                 SalesHeader.MODIFY;
                 //SGB005
@@ -302,10 +301,31 @@ codeunit 50000 "SGB Integration Management"
 
                         SalesLine.VALIDATE(Quantity, CustomerInvoiceStaging.Quantity);
                         SalesLine.VALIDATE("Unit Price", CustomerInvoiceStaging."Unit Price");
+                        //<<PTC001
+                        SalesLine."PNR No." := CustomerInvoiceStaging."PNR No.";
+                        SalesLine."Booking Ref. No" := CustomerInvoiceStaging."Booking Ref. No";
+                        SalesLine."Passenger Name" := CustomerInvoiceStaging."Passenger Name";
+
+                        SalesLine.Validate("WHT Business Posting Group", CustomerInvoiceStaging."WHT Bus. Posting Group");
+                        SalesLine.Validate("WHT Product Posting Group", CustomerInvoiceStaging."WHT Product Posting Group");
+
+                        AssignDimensionSalesLine(SalesLine, 'CLIENTTYPE', CustomerInvoiceStaging."Client Type Code(Dimension)");
+                        AssignDimensionSalesLine(SalesLine, 'COSTCATEGORY', CustomerInvoiceStaging."Cost Category (Dimension)");
+                        AssignDimensionSalesLine(SalesLine, 'COSTCENTER', CustomerInvoiceStaging."Client Type Code(Dimension)");
+                        AssignDimensionSalesLine(SalesLine, 'OFFICELOCATION', CustomerInvoiceStaging."Office Location (Dimension)");
+                        AssignDimensionSalesLine(SalesLine, 'PRINCIPAL', CustomerInvoiceStaging."Principal (Dimension)");
+                        AssignDimensionSalesLine(SalesLine, 'PRODUCTTYPE', CustomerInvoiceStaging."Product Type (Dimension)");
+                        AssignDimensionSalesLine(SalesLine, 'PROFITCENTER', CustomerInvoiceStaging."Profit Center (Dimension)");
+                        AssignDimensionSalesLine(SalesLine, 'SFCODE', CustomerInvoiceStaging."SF Code (Dimension)");
+                        AssignDimensionSalesLine(SalesLine, 'TEST', CustomerInvoiceStaging."Test Code (Dimension)");
+                        AssignDimensionSalesLine(SalesLine, 'TRANSACTTYPE', CustomerInvoiceStaging."Transact Type (Dimension)");
+                        AssignDimensionSalesLine(SalesLine, 'VESSEL', CustomerInvoiceStaging."Vessel (Dimension)");
+                        //<<PTC001
+
                         //SalesLine.VALIDATE(Amount, CustomerInvoiceStaging.Amount); SSLT
 
                         //SGB005
-                        SalesLine.VALIDATE("Shortcut Dimension 1 Code", CustomerInvoiceStaging."Country Code");
+                        //SalesLine.VALIDATE("Shortcut Dimension 1 Code", CustomerInvoiceStaging."Country Code"); //PTC001
                         //SGB005
 
                         SalesLine.SKU := CustomerInvoiceStaging.SKU;
@@ -314,9 +334,9 @@ codeunit 50000 "SGB Integration Management"
                         //SGB005
                         //SalesLine.VALIDATE("Shortcut Dimension 1 Code",CustomerInvoiceStaging."Country Code");
                         //SGB005
-
-
                         TempCustomerInvoiceStaging."Entry No." := CustomerInvoiceStaging."Entry No.";
+
+
                         TempCustomerInvoiceStaging.INSERT;
 
                     UNTIL CustomerInvoiceStaging.NEXT = 0;
@@ -1505,7 +1525,7 @@ codeunit 50000 "SGB Integration Management"
                     TempSalesHeader."Sell-to Customer No." := CustomerOrderStaging."Customer Id";
                     TempSalesHeader."Currency Factor" := CustomerOrderStaging."Exchange Rate";
                     TempSalesHeader."Posting Date" := CustomerOrderStaging."Order Date";
-                    TempSalesHeader."Shortcut Dimension 1 Code" := CustomerOrderStaging."Country Code";
+                    //TempSalesHeader."Shortcut Dimension 1 Code" := CustomerOrderStaging."Country Code";//PTC001
                     TempSalesHeader."External Document No." := CustomerOrderStaging."Order Increment Id";
                     /*TempSalesHeader.LTH := CustomerOrderStaging.LTH;
                     TempSalesHeader.LTHSHIP := CustomerOrderStaging.LTHSHIP;*///removal SSLT - moved to lines
@@ -1651,7 +1671,7 @@ codeunit 50000 "SGB Integration Management"
                                 SalesLine2.VALIDATE("Qty. to Invoice (Base)", CustomerOrderStaging."Quantity Shipped");
                                 SalesLine2.VALIDATE("Qty. to Ship", CustomerOrderStaging."Quantity Shipped");
                                 SalesLine2.VALIDATE("Qty. to Ship (Base)", CustomerOrderStaging."Quantity Shipped");
-                                SalesLine2.VALIDATE("Shortcut Dimension 1 Code", CustomerOrderStaging."Country Code");
+                                //SalesLine2.VALIDATE("Shortcut Dimension 1 Code", CustomerOrderStaging."Country Code"); //PTC001
                                 SalesLine2.Validate(LTH, CustomerOrderStaging.LTH); //SSLT
                                 SalesLine2.Validate(LTHSHIP, CustomerOrderStaging.LTHSHIP); //SSLT
                                 SalesLine2.validate("Shipment Id", CustomerOrderStaging."Shipment Id"); //SSLT
@@ -1684,7 +1704,7 @@ codeunit 50000 "SGB Integration Management"
 
                     SalesHeader.GET(SalesHeader."Document Type"::Order, TempSalesHeader."No.");
 
-                    SalesHeader.VALIDATE("Shortcut Dimension 1 Code", TempSalesHeader."Shortcut Dimension 1 Code");
+                    //SalesHeader.VALIDATE("Shortcut Dimension 1 Code", TempSalesHeader."Shortcut Dimension 1 Code"); //PTC001
                     SalesHeader.MODIFY;
 
                     NextLineNo := 0;
@@ -2312,6 +2332,28 @@ codeunit 50000 "SGB Integration Management"
             Item.Validate("Gen. Prod. Posting Group", GenProdPostingGrp);
             Item.Validate("Inventory Posting Group", InventoryPostingGroup);
             Item.Modify();
+        end;
+    end;
+    //PTC001
+    local procedure AssignDimensionSalesLine(Var SalesLine: Record "Sales Line"; DimCode: Code[20]; DimValue: Code[20])
+    var
+        DimMgt: Codeunit DimensionManagement;
+        DimSetEntry: Record "Dimension Set Entry";
+        NewDimSetID: Integer;
+    begin
+
+        if DimValue <> '' then begin
+            NewDimSetID :=
+                        DimMgt.SetDimensionValue(
+                        SalesLine."Dimension Set ID",     // current set
+                        DimCode,               // Dimension Code
+                        DimValue,              // Dimension Value Code
+                        false,                 // Create missing Dimension
+                        false                  // Create missing Dimension Value
+                        );
+
+            SalesLine."Dimension Set ID" := NewDimSetID;
+            SalesLine.Modify();
         end;
     end;
 

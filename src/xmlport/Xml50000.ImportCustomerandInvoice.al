@@ -12,10 +12,13 @@ xmlport 50000 "Import Customer and Invoice"
         {
             tableelement("Customer and Invoice Staging"; "Customer and Invoice Staging")
             {
+
                 XmlName = 'Import';
+
                 fieldelement(f1; "Customer and Invoice Staging".Sequence)
                 {
                 }
+
                 fieldelement(shipment_date; "Customer and Invoice Staging"."Shipment Date")
                 {
                 }
@@ -88,6 +91,57 @@ xmlport 50000 "Import Customer and Invoice"
                 //fieldelement(is_long_term_hold; "Customer and Invoice Staging"."No Mapping")
                 //{
                 //}
+                //>>PTC001  //S is Column
+                fieldelement(S1; "Customer and Invoice Staging"."PNR No.")
+                {
+                }
+                fieldelement(T1; "Customer and Invoice Staging"."Booking Ref. No")
+                {
+                }
+                fieldelement(U1; "Customer and Invoice Staging"."Passenger Name")
+                {
+                }
+
+                fieldelement(V1; "Customer and Invoice Staging"."WHT Bus. Posting Group")
+                {
+                }
+                fieldelement(W1; "Customer and Invoice Staging"."WHT Product Posting Group")
+                {
+                }
+                fieldelement(X1; "Customer and Invoice Staging"."Client Type Code(Dimension)")
+                {
+                }
+                fieldelement(Y1; "Customer and Invoice Staging"."Cost Category (Dimension)")
+                {
+                }
+                fieldelement(Z1; "Customer and Invoice Staging"."Cost Center (Dimension)")
+                {
+                }
+                fieldelement(AA; "Customer and Invoice Staging"."Office Location (Dimension)")
+                {
+                }
+                fieldelement(AB; "Customer and Invoice Staging"."Principal (Dimension)")
+                {
+                }
+                fieldelement(AC; "Customer and Invoice Staging"."Product Type (Dimension)")
+                {
+                }
+                fieldelement(AD; "Customer and Invoice Staging"."Profit Center (Dimension)")
+                {
+                }
+                fieldelement(AE; "Customer and Invoice Staging"."SF Code (Dimension)")
+                {
+                }
+                fieldelement(AF; "Customer and Invoice Staging"."Test Code (Dimension)")
+                {
+                }
+                fieldelement(AG; "Customer and Invoice Staging"."Transact Type (Dimension)")
+                {
+                }
+                fieldelement(AH; "Customer and Invoice Staging"."Vessel (Dimension)")
+                {
+                }
+                //<<PTC001
 
                 trigger OnBeforeInsertRecord()
                 var
@@ -95,6 +149,18 @@ xmlport 50000 "Import Customer and Invoice"
                     SymptCode: Record "Symptom Code";
                 begin
                     "Customer and Invoice Staging"."No Mapping" := '';
+                end;
+
+
+                trigger OnAfterInitRecord()
+                var
+                    myInt: Integer;
+                begin
+                    if not HeaderSkipped then begin
+                        HeaderSkipped := true;
+                        CurrXmlPort.Skip;
+                        exit;
+                    end;
                 end;
             }
         }
@@ -111,5 +177,7 @@ xmlport 50000 "Import Customer and Invoice"
         {
         }
     }
+    var
+        HeaderSkipped: Boolean;
 }
 

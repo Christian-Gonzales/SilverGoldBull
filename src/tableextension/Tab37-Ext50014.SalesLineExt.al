@@ -19,6 +19,22 @@ tableextension 50014 "SalesLineExt" extends "Sales Line"  //37
             Caption = 'SKU';
             DataClassification = CustomerContent;
         }
+        //>>PTC001
+        field(50230; "PNR No."; code[30])
+        {
+            DataClassification = ToBeClassified;
+
+        }
+        field(50231; "Booking Ref. No"; code[20])
+        {
+            DataClassification = ToBeClassified;
+
+        }
+        field(50232; "Passenger Name"; text[100])
+        {
+            DataClassification = ToBeClassified;
+        }
+        //<<PTC001
     }
 
 }
