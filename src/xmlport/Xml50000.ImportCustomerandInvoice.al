@@ -41,9 +41,7 @@ xmlport 50000 "Import Customer and Invoice"
                 fieldelement(f5; "Customer and Invoice Staging"."Customer Name")
                 {
                 }
-                fieldelement(metal_type; "Customer and Invoice Staging"."Metal Type")
-                {
-                }
+
                 fieldelement(f6; "Customer and Invoice Staging"."Item No.")
                 {
                 }

@@ -12,50 +12,53 @@ page 50000 "Customer and Invoice Staging"
         {
             repeater(Group)
             {
-                field("Has Error"; "Has Error")
+                field("Has Error"; Rec."Has Error")
                 {
                     ApplicationArea = all;
                     Editable = false;
                     Style = Attention;
                     StyleExpr = HasError;
                 }
-                field("Entry No."; "Entry No.")
+                field("Entry No."; Rec."Entry No.")
                 {
                     ApplicationArea = all;
                     Editable = false;
                 }
-                field(Sequence; Sequence)
+                field(Sequence; Rec.Sequence)
                 {
                     ApplicationArea = all;
                     Visible = false;
                 }
-                field("Shipment Date"; "Shipment Date")
+                field("Shipment Date"; Rec."Shipment Date")
                 {
                     ApplicationArea = all;
                 }
-                field("Invoice Date"; "Invoice Date")
+                field("Invoice Date"; Rec."Invoice Date")
                 {
                     ApplicationArea = all;
                 }
-                field("Shipment Increment Id"; "Shipment Increment Id")
+                field("Shipment Increment Id"; Rec."Shipment Increment Id")
                 {
                     ApplicationArea = all;
+                    Caption = 'Document No.';
                 }
-                field("Order Increment Id"; "Order Increment Id")
+                field("Order Increment Id"; Rec."Order Increment Id")
                 {
                     ApplicationArea = all;
+                    Caption = 'External Document No.';
                 }
                 //field("External Document No."; "External Document No.")
                 //{
                 //    ApplicationArea = all;
                 //}
-                field("Customer Id"; "Customer Id")
+                field("Customer Id"; Rec."Customer Id")
                 {
                     ApplicationArea = all;
                     Style = Attention;
                     StyleExpr = CustomerError;
+                    Caption = 'Customer No.';
                 }
-                field("Customer Name"; "Customer Name")
+                field("Customer Name"; Rec."Customer Name")
                 {
                     ApplicationArea = all;
                 }
@@ -63,8 +66,9 @@ page 50000 "Customer and Invoice Staging"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Metal Type field.';
+                    Visible = False;
                 }
-                field("Item No."; "Item No.")
+                field("Item No."; Rec."Item No.")
                 {
                     ApplicationArea = all;
                     Style = Attention;
@@ -100,33 +104,33 @@ page 50000 "Customer and Invoice Staging"
                     Style = Attention;
                     StyleExpr = ItemError;
                 }
-                field(Quantity; Quantity)
+                field(Quantity; Rec.Quantity)
                 {
                     ApplicationArea = all;
                 }
-                field("Unit Price"; "Unit Price")
+                field("Unit Price"; Rec."Unit Price")
                 {
                     ApplicationArea = all;
                 }
-                field(Amount; Amount)
+                field(Amount; Rec.Amount)
                 {
                     ApplicationArea = all;
                 }
-                field("Integration Currency code"; "Integration Currency code")
+                field("Integration Currency code"; Rec."Integration Currency code")
                 {
                     ApplicationArea = all;
                     Style = Attention;
                     StyleExpr = TemplateError;
                 }
-                field("Shipped From"; "Shipped From")
+                field("Shipped From"; Rec."Shipped From")
                 {
                     ApplicationArea = all;
                 }
-                field("Country Code"; "Country Code")
+                field("Country Code"; Rec."Country Code")
                 {
                     ApplicationArea = all;
                 }
-                field("Exchange Rate"; "Exchange Rate")
+                field("Exchange Rate"; Rec."Exchange Rate")
                 {
                     ApplicationArea = all;
                 }
@@ -291,27 +295,27 @@ page 50000 "Customer and Invoice Staging"
 
     trigger OnAfterGetRecord()
     begin
-        IF "Error Message" <> '' THEN
+        IF Rec."Error Message" <> '' THEN
             HasError := TRUE
         ELSE
             HasError := FALSE;
 
-        IF "Error 1" THEN
+        IF Rec."Error 1" THEN
             CustomerError := TRUE
         ELSE
             CustomerError := FALSE;
 
-        IF "Error 2" THEN
+        IF Rec."Error 2" THEN
             ItemError := TRUE
         ELSE
             ItemError := FALSE;
 
-        IF "Error 3" THEN
+        IF Rec."Error 3" THEN
             TemplateError := TRUE
         ELSE
             TemplateError := FALSE;
 
-        IF "Error 4" THEN
+        IF Rec."Error 4" THEN
             InvoiceNoError := TRUE
         ELSE
             InvoiceNoError := FALSE;
@@ -321,10 +325,10 @@ page 50000 "Customer and Invoice Staging"
     begin
         CompanyInfo.GET;
 
-        FILTERGROUP(2);
-        SETRANGE(Processed, FALSE);
-        SETRANGE("Shipped From", CompanyInfo."Shipped From");
-        FILTERGROUP(0);
+        Rec.FILTERGROUP(2);
+        Rec.SETRANGE(Processed, FALSE);
+        Rec.SETRANGE("Shipped From", CompanyInfo."Shipped From");
+        Rec.FILTERGROUP(0);
     end;
 
     var
