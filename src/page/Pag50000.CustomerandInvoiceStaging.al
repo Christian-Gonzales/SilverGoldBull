@@ -68,12 +68,21 @@ page 50000 "Customer and Invoice Staging"
                     ToolTip = 'Specifies the value of the Metal Type field.';
                     Visible = False;
                 }
-                field("Item No."; Rec."Item No.")
+                field("Type"; Rec."Type")
                 {
                     ApplicationArea = all;
+                    Caption = 'Type';
                     Style = Attention;
                     StyleExpr = ItemError;
                 }
+                field("Item No."; Rec."Item No.")
+                {
+                    ApplicationArea = all;
+                    Caption = 'No.';
+                    Style = Attention;
+                    StyleExpr = ItemError;
+                }
+
                 field(Description; Rec.Description)
                 {
                     ApplicationArea = all;

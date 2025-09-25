@@ -40,6 +40,11 @@ table 50000 "Customer and Invoice Staging"
                 end;
             end;
         }
+        field(34; Type; Enum "Sales Line Type")
+        {
+            Caption = 'Type';
+        }
+
 
         field(35; "Item No."; Text[50])
         {
@@ -47,21 +52,32 @@ table 50000 "Customer and Invoice Staging"
             var
                 CompanyInfo: Record "Company Information";
                 Item: Record Item;
+                GLAcc: Record "G/L Account";
             begin
-                if "Item No." <> '' then begin
-                    CompanyInfo.Get;
-                    if CompanyInfo."Shipped From" <> "Shipped From" then
-                        Item.ChangeCompany(GetCompanyName("Shipped From"));
-
-                    Item.Reset();
-                    Item.SetRange("Integration Item", "Item No.");
-                    if Item.FindFirst() then begin
-                        "Base Unit of Measure" := Item."Base Unit of Measure";
-                        "Gen. Product Posting Group" := Item."Gen. Prod. Posting Group";
-                        "Inventory Posting Group" := Item."Inventory Posting Group";
-                    end;
-                end;
+                Case Type OF
+                    Type::Item:
+                        BEgin
+                            if "Item No." <> '' then begin
+                                CompanyInfo.Get;
+                                if CompanyInfo."Shipped From" <> "Shipped From" then
+                                    Item.ChangeCompany(GetCompanyName("Shipped From"));
+                                Item.Reset();
+                                Item.SetRange("Integration Item", "Item No.");
+                                if Item.FindFirst() then begin
+                                    "Base Unit of Measure" := Item."Base Unit of Measure";
+                                    "Gen. Product Posting Group" := Item."Gen. Prod. Posting Group";
+                                    "Inventory Posting Group" := Item."Inventory Posting Group";
+                                end;
+                            end;
+                        End;
+                    Type::"G/L Account":
+                        BEgin
+                            GLAcc.Get("Item No.");
+                            "Gen. Product Posting Group" := GLAcc."Gen. Prod. Posting Group";
+                        End;
+                End;
             end;
+
         }
         field(36; "Base Unit of Measure"; Code[10])
         {

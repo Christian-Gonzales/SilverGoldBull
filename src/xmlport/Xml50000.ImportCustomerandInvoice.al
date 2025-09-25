@@ -41,6 +41,9 @@ xmlport 50000 "Import Customer and Invoice"
                 fieldelement(f5; "Customer and Invoice Staging"."Customer Name")
                 {
                 }
+                fieldelement(ff6; "Customer and Invoice Staging".Type)
+                {
+                }
 
                 fieldelement(f6; "Customer and Invoice Staging"."Item No.")
                 {
@@ -159,6 +162,7 @@ xmlport 50000 "Import Customer and Invoice"
                         CurrXmlPort.Skip;
                         exit;
                     end;
+
                 end;
             }
         }

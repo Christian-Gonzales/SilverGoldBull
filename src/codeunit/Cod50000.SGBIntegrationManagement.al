@@ -194,6 +194,7 @@ codeunit 50000 "SGB Integration Management"
         DefaultDim: Record "Default Dimension";
         GLSetup: Record "General Ledger Setup";
         HandleSalesLineNoValidation: Boolean;
+        GLAcc: record "G/L Account";
     begin
         CompanyInfo.GET;
         CompanyInfo.TESTFIELD("Shipped From");
@@ -288,16 +289,26 @@ codeunit 50000 "SGB Integration Management"
 
                         SalesLine.INSERT(TRUE);
                         OnBeforeValidateSalesLineNo_CreateSalesInvoices(CustomerInvoiceStaging, SalesLine, HandleSalesLineNoValidation);
+                        Case CustomerInvoiceStaging.Type of
+                            CustomerInvoiceStaging.Type::Item:
+                                BEGIN
+                                    if not HandleSalesLineNoValidation then begin
+                                        Item.SETRANGE("Integration Item", UPPERCASE(CustomerInvoiceStaging."Item No."));
+                                        if Item.IsEmpty then
+                                            CreateItem(UPPERCASE(CustomerInvoiceStaging."Item No."), CustomerInvoiceStaging.Description, CustomerInvoiceStaging."Base Unit of Measure", CustomerInvoiceStaging."Gen. Product Posting Group", CustomerInvoiceStaging."Inventory Posting Group");
+                                        Item.FINDFIRST;
 
-                        if not HandleSalesLineNoValidation then begin
-                            Item.SETRANGE("Integration Item", UPPERCASE(CustomerInvoiceStaging."Item No."));
-                            if Item.IsEmpty then
-                                CreateItem(UPPERCASE(CustomerInvoiceStaging."Item No."), CustomerInvoiceStaging.Description, CustomerInvoiceStaging."Base Unit of Measure", CustomerInvoiceStaging."Gen. Product Posting Group", CustomerInvoiceStaging."Inventory Posting Group");
-                            Item.FINDFIRST;
-
-                            SalesLine.VALIDATE(Type, SalesLine.Type::Item);
-                            SalesLine.VALIDATE("No.", Item."No.");
+                                        SalesLine.VALIDATE(Type, SalesLine.Type::Item);
+                                        SalesLine.VALIDATE("No.", Item."No.");
+                                    end;
+                                End;
+                            CustomerInvoiceStaging.Type::"G/L Account":
+                                BEGIN
+                                    SalesLine.VALIDATE(Type, SalesLine.Type::"G/L Account");
+                                    SalesLine.VALIDATE("No.", CustomerInvoiceStaging."Item No.");
+                                END
                         end;
+
 
                         SalesLine.VALIDATE(Quantity, CustomerInvoiceStaging.Quantity);
                         SalesLine.VALIDATE("Unit Price", CustomerInvoiceStaging."Unit Price");
@@ -394,6 +405,7 @@ codeunit 50000 "SGB Integration Management"
         TotalLine: Integer;
         ErrorLine: Integer;
         HandleNoValidation: Boolean;
+        GLAcc: Record "G/L Account";
     begin
         CompanyInfo.GET;
         CompanyInfo.TESTFIELD("Shipped From");
@@ -443,33 +455,51 @@ codeunit 50000 "SGB Integration Management"
 
                 OnBeforeValidateNo_CheckSalesInvoices(CustomerInvoiceStaging, HandleNoValidation);
 
-                if not HandleNoValidation then begin
-                    Item.SETRANGE("Integration Item", UPPERCASE(CustomerInvoiceStaging."Item No."));
-                    if not ToCreateItem then begin
-                        IF NOT Item.FINDFIRST THEN BEGIN
-                            CustomerInvoiceStaging."Error Message" := STRSUBSTNO(Text50001, 'Item', CustomerInvoiceStaging."Item No.");
+                Case CustomerInvoiceStaging.Type OF
+                    CustomerInvoiceStaging.Type::" ":
+                        Begin
+                            CustomerInvoiceStaging."Error Message" := 'Type must not be blank.';
+
                             CustomerInvoiceStaging."Error 2" := TRUE;
-                        END;
-                    end;
+                        End;
+                    CustomerInvoiceStaging.Type::"Item":
+                        BEgin
+                            if not HandleNoValidation then begin
+                                Item.SETRANGE("Integration Item", UPPERCASE(CustomerInvoiceStaging."Item No."));
+                                if not ToCreateItem then begin
+                                    IF NOT Item.FINDFIRST THEN BEGIN
+                                        CustomerInvoiceStaging."Error Message" := STRSUBSTNO(Text50001, 'Item', CustomerInvoiceStaging."Item No.");
+                                        CustomerInvoiceStaging."Error 2" := TRUE;
+                                    END;
+                                end;
 
-                    IF CustomerInvoiceStaging."Base Unit of Measure" = '' THEN BEGIN
-                        CustomerInvoiceStaging."Error Message" := STRSUBSTNO('%1 must have a value.', CustomerInvoiceStaging.FieldCaption("Base Unit of Measure"));
-                        CustomerInvoiceStaging."Error 2" := TRUE;
-                    END;
+                                IF CustomerInvoiceStaging."Base Unit of Measure" = '' THEN BEGIN
+                                    CustomerInvoiceStaging."Error Message" := STRSUBSTNO('%1 must have a value.', CustomerInvoiceStaging.FieldCaption("Base Unit of Measure"));
+                                    CustomerInvoiceStaging."Error 2" := TRUE;
+                                END;
 
-                    IF CustomerInvoiceStaging."Gen. Product Posting Group" = '' THEN BEGIN
-                        CustomerInvoiceStaging."Error Message" := STRSUBSTNO('%1 must have a value.', CustomerInvoiceStaging.FieldCaption("Gen. Product Posting Group"));
-                        CustomerInvoiceStaging."Error 2" := TRUE;
-                    END;
+                                IF CustomerInvoiceStaging."Gen. Product Posting Group" = '' THEN BEGIN
+                                    CustomerInvoiceStaging."Error Message" := STRSUBSTNO('%1 must have a value.', CustomerInvoiceStaging.FieldCaption("Gen. Product Posting Group"));
+                                    CustomerInvoiceStaging."Error 2" := TRUE;
+                                END;
 
-                    if Item.FindFirst() then;
+                                if Item.FindFirst() then;
 
-                    if Item.Type = Item.Type::Inventory then
-                        IF CustomerInvoiceStaging."Inventory Posting Group" = '' THEN BEGIN
-                            CustomerInvoiceStaging."Error Message" := STRSUBSTNO('%1 must have a value.', CustomerInvoiceStaging.FieldCaption("Inventory Posting Group"));
-                            CustomerInvoiceStaging."Error 2" := TRUE;
-                        END;
-                end;
+                                if Item.Type = Item.Type::Inventory then
+                                    IF CustomerInvoiceStaging."Inventory Posting Group" = '' THEN BEGIN
+                                        CustomerInvoiceStaging."Error Message" := STRSUBSTNO('%1 must have a value.', CustomerInvoiceStaging.FieldCaption("Inventory Posting Group"));
+                                        CustomerInvoiceStaging."Error 2" := TRUE;
+                                    END;
+                            end;
+                        End;
+                    CustomerInvoiceStaging.Type::"G/L Account":
+                        begin
+                            IF NOT GLAcc.GET(CustomerInvoiceStaging."Item No.") THEN BEGIN
+                                CustomerInvoiceStaging."Error Message" := STRSUBSTNO(Text50001, 'G/L Account', CustomerInvoiceStaging."Item No.");
+                                CustomerInvoiceStaging."Error 2" := TRUE;
+                            END;
+                        end;
+                END;
 
                 IF NOT ConfigTemplateHeader.GET(CustomerInvoiceStaging."Integration Currency code") THEN BEGIN
                     CustomerInvoiceStaging."Error Message" := STRSUBSTNO(Text50004, CustomerInvoiceStaging."Integration Currency code");
