@@ -41,7 +41,7 @@ codeunit 50000 "SGB Integration Management"
     procedure SalesProcess()
     begin
         ToCreateItem := true;
-        CreateCustomers(0);
+        //CreateCustomers(0);
         CheckSalesInvoices(false);
         CreateSalesInvoices();
     end;
@@ -197,7 +197,7 @@ codeunit 50000 "SGB Integration Management"
         GLAcc: record "G/L Account";
     begin
         CompanyInfo.GET;
-        CompanyInfo.TESTFIELD("Shipped From");
+        //CompanyInfo.TESTFIELD("Shipped From");
 
         IntegrationSetup.GET;
 
@@ -218,7 +218,7 @@ codeunit 50000 "SGB Integration Management"
         CustomerInvoiceStaging.SETCURRENTKEY("Shipped From", Processed);
 
         CustomerInvoiceStaging.SETRANGE(Processed, FALSE);
-        CustomerInvoiceStaging.SETRANGE("Shipped From", CompanyInfo."Shipped From");
+        //CustomerInvoiceStaging.SETRANGE("Shipped From", CompanyInfo."Shipped From");
         CustomerInvoiceStaging.SETRANGE("Has Error", FALSE);
         IF CustomerInvoiceStaging.FINDSET THEN
             REPEAT
@@ -252,14 +252,14 @@ codeunit 50000 "SGB Integration Management"
                 SalesHeader.VALIDATE("No.", TempSalesHeader."No.");
                 SalesHeader.VALIDATE("Sell-to Customer No.", CustomerID);
                 SalesHeader.VALIDATE("Posting Date", TempSalesHeader."Posting Date");
-                SalesHeader."Currency Factor" := 1 / TempSalesHeader."Currency Factor";
+                //SalesHeader."Currency Factor" := 1 / TempSalesHeader."Currency Factor";
                 SalesHeader."Posting No." := SalesHeader."No.";
                 SalesHeader."Created from Integration" := TRUE;
                 SalesHeader."External Document No." := TempSalesHeader."External Document No."; //SSLT 09-27-21
                 IF CustomerInvoiceStaging."Integration Currency code" <> GLSetup."LCY Code" THEN
-                    TempSalesHeader."Currency Code" := CustomerInvoiceStaging."Integration Currency code"
+                    SalesHeader.VALIDATE("Currency Code", CustomerInvoiceStaging."Integration Currency code")
                 ELSE
-                    TempSalesHeader."Currency Code" := '';
+                    SalesHeader."Currency Code" := '';
 
                 //SGB005
                 //SalesHeader.VALIDATE("Shortcut Dimension 1 Code",TempSalesHeader."Shortcut Dimension 1 Code");//PTC001
@@ -312,10 +312,12 @@ codeunit 50000 "SGB Integration Management"
 
                         SalesLine.VALIDATE(Quantity, CustomerInvoiceStaging.Quantity);
                         SalesLine.VALIDATE("Unit Price", CustomerInvoiceStaging."Unit Price");
+                        //SalesLine.Validate("Currency Code", CustomerInvoiceStaging."Integration Currency code");
                         //<<PTC001
                         SalesLine."PNR No." := CustomerInvoiceStaging."PNR No.";
                         SalesLine."Booking Ref. No" := CustomerInvoiceStaging."Booking Ref. No";
                         SalesLine."Passenger Name" := CustomerInvoiceStaging."Passenger Name";
+
 
                         SalesLine.Validate("WHT Business Posting Group", CustomerInvoiceStaging."WHT Bus. Posting Group");
                         SalesLine.Validate("WHT Product Posting Group", CustomerInvoiceStaging."WHT Product Posting Group");
@@ -408,7 +410,7 @@ codeunit 50000 "SGB Integration Management"
         GLAcc: Record "G/L Account";
     begin
         CompanyInfo.GET;
-        CompanyInfo.TESTFIELD("Shipped From");
+        //CompanyInfo.TESTFIELD("Shipped From");
 
         IntegrationSetup.GET;
 
@@ -420,7 +422,7 @@ codeunit 50000 "SGB Integration Management"
         CustomerInvoiceStaging.RESET;
 
         CustomerInvoiceStaging.SETRANGE(Processed, FALSE);
-        CustomerInvoiceStaging.SETRANGE("Shipped From", CompanyInfo."Shipped From");
+        //CustomerInvoiceStaging.SETRANGE("Shipped From", CompanyInfo."Shipped From");
 
 
         CustomerInvoiceStaging.MODIFYALL("Has Error", FALSE);
@@ -501,10 +503,10 @@ codeunit 50000 "SGB Integration Management"
                         end;
                 END;
 
-                IF NOT ConfigTemplateHeader.GET(CustomerInvoiceStaging."Integration Currency code") THEN BEGIN
-                    CustomerInvoiceStaging."Error Message" := STRSUBSTNO(Text50004, CustomerInvoiceStaging."Integration Currency code");
-                    CustomerInvoiceStaging."Error 3" := TRUE;
-                END;
+                //IF NOT ConfigTemplateHeader.GET(CustomerInvoiceStaging."Integration Currency code") THEN BEGIN
+                //   CustomerInvoiceStaging."Error Message" := STRSUBSTNO(Text50004, CustomerInvoiceStaging."Integration Currency code");
+                //   CustomerInvoiceStaging."Error 3" := TRUE;
+                //END;
 
                 IF NOT CustomerInvoiceStaging.Regenerated THEN BEGIN
                     ProcessedCustomerInvoiceStaging.SETRANGE(Processed, TRUE);

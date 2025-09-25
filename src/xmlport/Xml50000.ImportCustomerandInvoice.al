@@ -75,20 +75,20 @@ xmlport 50000 "Import Customer and Invoice"
                 fieldelement(f10; "Customer and Invoice Staging"."Integration Currency code")
                 {
                 }
-                fieldelement(f11; "Customer and Invoice Staging"."Shipped From")
-                {
-                    trigger OnAfterAssignField()
-                    begin
-                        if "Customer and Invoice Staging"."Gen. Product Posting Group" = '' then
-                            "Customer and Invoice Staging".Validate("Item No.");
-                    end;
-                }
-                fieldelement(f13; "Customer and Invoice Staging"."Country Code")
-                {
-                }
-                fieldelement(f12; "Customer and Invoice Staging"."Exchange Rate")
-                {
-                }
+                //fieldelement(f11; "Customer and Invoice Staging"."Shipped From")
+                //{
+                //    trigger OnAfterAssignField()
+                //   begin
+                //       if "Customer and Invoice Staging"."Gen. Product Posting Group" = '' then
+                //           "Customer and Invoice Staging".Validate("Item No.");
+                //   end;
+                //}
+                //fieldelement(f13; "Customer and Invoice Staging"."Country Code")
+                //{
+                //}
+                //fieldelement(f12; "Customer and Invoice Staging"."Exchange Rate")
+                //{
+                //}
                 //fieldelement(is_long_term_hold; "Customer and Invoice Staging"."No Mapping")
                 //{
                 //}

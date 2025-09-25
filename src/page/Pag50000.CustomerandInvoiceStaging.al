@@ -134,10 +134,12 @@ page 50000 "Customer and Invoice Staging"
                 field("Shipped From"; Rec."Shipped From")
                 {
                     ApplicationArea = all;
+                    Visible = False;
                 }
                 field("Country Code"; Rec."Country Code")
                 {
                     ApplicationArea = all;
+                    Visible = False;
                 }
                 field("Exchange Rate"; Rec."Exchange Rate")
                 {
@@ -336,7 +338,7 @@ page 50000 "Customer and Invoice Staging"
 
         Rec.FILTERGROUP(2);
         Rec.SETRANGE(Processed, FALSE);
-        Rec.SETRANGE("Shipped From", CompanyInfo."Shipped From");
+        //Rec.SETRANGE("Shipped From", CompanyInfo."Shipped From");
         Rec.FILTERGROUP(0);
     end;
 
